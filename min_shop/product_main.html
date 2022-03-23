@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 관리 페이지</title>
+<style>
+    *{
+        margin:0;
+    }
+    .my_nav{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: baseline;
+        list-style: none;
+        background-color: rgba(200,145,245,0.6);
+    }
+    .my_nav>li:first-child{
+        font-size: 25px;
+        padding: 8px 14px;
+    }
+    .my_nav a{
+        text-decoration: none;
+        color: rgba(34, 3, 65, 0.822);
+        font-weight: bolder;
+    }
+    .my_nav a:hover{
+        color: rgba(124, 13, 235, 0.822);
+    }
+    .my_nav_menu{
+        display: flex;
+        flex-direction: row;
+        list-style: none;
+    }
+    .my_nav_menu li{
+        padding: 8px 14px;
+    }
+    .my_nav_sub{
+        display: flex;
+        flex-direction: row;
+        
+        list-style: none;
+    }
+    .my_nav_sub>li{
+        padding: 8px 14px;
+    }
+    .grid_dispay{
+        display: grid;
+        grid-template-columns: 2fr 10fr;
+        grid-template-areas: 'aside main';
+    }
+    .aside_area{
+        margin-top: 50px;
+        grid-area: aside;
+    }
+    .main_area{
+        margin-top: 50px;
+        grid-area:main;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+        grid-template-areas:
+        'i1 i2 i3'
+        'i4 i5 i6';
+        justify-items: center;
+        row-gap: 20px;
+
+    }
+    .product_box{
+        display: flex;
+        width: 400px;
+        flex-direction: row;
+        border: 2px solid black;
+        padding: 10px 14px;
+    }
+    .product_box>img{
+        width: 200px;
+        height: 200px;
+        border: 1px solid red;
+    }
+    .product_info{
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        gap: 10px;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <ul class="my_nav">
+            <li>
+                <a href="http://127.0.0.1:7777/index.html">샵핑몰</a>
+            </li>
+            <ul class="my_nav_menu">
+                <li><a href="http://127.0.0.1:7777/member/showList.do">회원 관리</a></li>
+                <li><a href="http://127.0.0.1:7777/product/main.do">상품 관리</a></li>
+                <li><a href="">게시판 관리</a></li>
+            </ul>
+
+            <ul class="my_nav_sub">
+                <li><a href="">로그인</a></li>
+                <li><a href="http://127.0.0.1:7777/member/join_user.do">회원 가입</a></li>
+            </ul>
+        </ul>
+    </header>
+    <div class="grid_dispay">
+        <aside class="aside_area">
+            <ul>
+                <li>가전
+                    <ul>
+                        <li>올레드</li>
+                        <li>미니 LED</li>
+                        <li>QLED</li>
+                    </ul>
+                </li>
+                <li>컴퓨터</li>
+                <li>아웃도어</li>
+                <li>패션
+                    <ul>
+                        <li>여성의류</li>
+                        <li>남성의류</li>
+                        <li>가방</li>
+                        <li>신발
+                            <ul>
+                                <li>스니커즈</li>
+                                <li>남성구두</li>
+                                <li>여성구두</li>
+                            </ul>
+                        </li>
+                        <li>운동화</li>
+                    </ul>
+                </li>
+                <li>주방</li>
+            </ul>
+        </aside>
+        <main class="main_area">
+            <div class="product_box" style="display: none;">
+                <img src="" alt="신발" class="product_img">
+                <ul class="product_info">
+                    <li>상세 보기 :<a href="http://127.0.0.1:7777/product/detail?id=" class="link_to_detail">1905</a> 이동!</li>
+                    <li>이름 : <span class="NAME">컨버스1010</span></li>
+                    <li>남은 수량 :<span class="COUNT">100</span></li>
+                    <li><strong class="COUNT_RESULT">판매중</strong></li> <!--남은 수량 0 ? 매진 : 판매중-->
+                    <li>가격:<span class="PRICE">80000</span>원</li>
+                    <li>브랜드 : <span class="BRAND">컨버스</span></li>
+                </ul>
+            </div>
+            
+        </main>
+    </div>
+
+
+    
+
+<script>
+    const main_area =document.querySelector('main.main_area');
+    const product_box = document.querySelector('div.product_box'); // 복사할 노드
+   window.addEventListener('load',async ()=>{
+       await showProduct_info();
+       await showProduct_mainImg();
+       await showMenuList();
+   });
+
+
+   function showProduct_info(){
+        return new Promise((resolve, reject)=>{
+            fetch('/product/show/list')
+            .then((res)=> res.json())
+            .then((product_list)=>{
+                console.log(product_list);
+                
+                main_area.innerHTML='';
+                product_list.forEach((product)=>{
+                    const clone_product_box = product_box.cloneNode(true);
+                    clone_product_box.style.display='';
+                    let key;
+                    for(key in product){
+                       switch(key){
+                           case 'ID':
+                                clone_product_box.querySelector('a.link_to_detail').innerText = product[key];
+                                clone_product_box.querySelector('a.link_to_detail').href += product[key];
+                                break;
+                           case 'BRAND':
+                                clone_product_box.querySelector(`.${key}`).innerText = product[key];
+                                break;
+                            case 'COUNT':
+                                clone_product_box.querySelector(`.${key}`).innerText = product[key];
+                                if(product[key] >0 ){
+                                    clone_product_box.querySelector(`.COUNT_RESULT`).innerText = '판매 중';
+                                }else{
+                                    clone_product_box.querySelector(`.COUNT_RESULT`).innerText = '매진';
+                                }
+                                break;
+                            case 'MAIN_IMG':
+                                
+                                clone_product_box.querySelector('img.product_img').src = './image/'+product[key];
+                                break;
+                            case 'PRICE':
+                                clone_product_box.querySelector(`.${key}`).innerText = product[key];
+                                break;
+                       }
+                    }
+                    main_area.append(clone_product_box);
+                })
+                
+            });
+        })
+   }
+</script>
+</body>
+</html>

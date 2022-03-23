@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+        }
+        .my_nav{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: baseline;
+            list-style: none;
+            background-color: rgba(200,145,245,0.6);
+        }
+        .my_nav>li:first-child{
+            font-size: 25px;
+            padding: 8px 14px;
+        }
+        .my_nav a{
+            text-decoration: none;
+            color: rgba(34, 3, 65, 0.822);
+            font-weight: bolder;
+        }
+        .my_nav a:hover{
+            color: rgba(124, 13, 235, 0.822);
+        }
+        .my_nav_menu{
+            display: flex;
+            flex-direction: row;
+            list-style: none;
+        }
+        .my_nav_menu li{
+            padding: 8px 14px;
+        }
+        .my_nav_sub{
+            display: flex;
+            flex-direction: row;
+            
+            list-style: none;
+        }
+        .my_nav_sub>li{
+            padding: 8px 14px;
+        }
+
+        .user_list_t{
+            width: 100%;
+            text-align: center;
+            padding: 8px 14px;
+            border-collapse: collapse;
+        }
+        .user_list_t>thead{
+            background-color: rgba(224, 216, 231, 0.239);
+            
+        }
+        .user_list_t th{
+            padding:15px 14px;
+            color: rgba(50, 8, 85, 0.884);;
+        }
+        .user_list_t>tbody td{
+            padding: 8px 14px;
+            font-size: 17px;
+        }
+        .user_list_t>tbody>tr:nth-child(odd){
+            background-color: rgba(170, 163, 173, 0.411);
+        }
+        .user_list_t>tbody>tr:nth-child(even){
+            background-color: rgba(191, 120, 221, 0.363);
+        }
+        
+        
+        .modal{
+            position: absolute;
+            right: 40vw;
+            top: 20vh;
+            background-color: rgba(191, 120, 221, 0.856);
+
+            border: 3px dashed rgba(191, 120, 221, 0.856);
+            width: 450px;
+            height: 500px;
+            border-radius: 15px;
+            z-index: 1;
+        }
+      
+    </style>
+
+</head>
+<body>
+    <header>
+        <ul class="my_nav">
+            <li>
+                <a href="http://127.0.0.1:7777/index.html">샵핑몰</a>
+            </li>
+            <ul class="my_nav_menu">
+                <li><a href="http://127.0.0.1:7777/member/showList.do">회원 관리</a></li>
+                <li><a href="http://127.0.0.1:7777/product/main.do">상품 관리</a></li>
+                <li><a href="">게시판 관리</a></li>
+            </ul>
+
+            <ul class="my_nav_sub">
+                <li><a href="">로그인</a></li>
+                <li><a href="http://127.0.0.1:7777/member/join_user.do">회원 가입</a></li>
+            </ul>
+        </ul>
+    </header>
+
+    <main>
+       <table class='user_list_t'style="width: 100%; text-align: center; padding: 8px 14px;">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>MAIL</th>
+                    <th>BIRTH</th>
+                    <th>UPDATE</th>
+                    <th>DELETE</th>
+                </tr>
+            </thead>
+            <tbody id="user_list_tbody">
+                <tr class="origin_list" style="display: none;">
+                    <td class="ID"></td>
+                    <td class="NAME"></td>
+                    <td class="EMAIL"></td>
+                    <td class="BIRTH"></td>
+                    <td><button class="updateBtn">수정</button></td>
+                    <td><button class="deleteBtn">삭제</button></td>
+                </tr>
+                
+            </tbody>
+       </table>
+           
+    </main>
+
+<!-- 업데이트 form 창을 만들어보자 -->
+    <div class="modal" style="display:  none;">
+
+    </div>
+</body>
+
+<script>
+    function login_obj(id, pwd){
+        this.id =id;
+        this.pwd = pwd;
+    }
+    const user_list_tbody = document.getElementById('user_list_tbody');
+    
+    const  origin_list = document.querySelector('tr.origin_list');
+    const modal = document.querySelector('div.modal');
+    window.addEventListener('load',async ()=>{
+        await showList();
+    });
+
+    async function showList(){
+        const res  = await fetch('/user/ajax/showList.do');
+        const user_list = await res.json();
+        user_list_tbody.innerHTML='';
+        user_list.forEach((user)=>{
+            const clone_list = origin_list.cloneNode(true);
+            clone_list.style.display='';
+            let key;
+            for(key in user){
+                switch(key){
+                    case 'ID' : 
+                        clone_list.querySelector('.'+key).innerText=user[key];
+                        clone_list.querySelector('.updateBtn').addEventListener('click',()=>{updateUser(user['ID'])});
+                        clone_list.querySelector('.deleteBtn').addEventListener('click',()=>{deleteUser(user['ID'])});
+                        break;
+                    case 'NAME' :
+                        clone_list.querySelector('.'+key).innerText=user[key];
+                        break;
+                    case 'EMAIL' : 
+                        clone_list.querySelector('.'+key).innerText=user[key];
+                        break;
+                    case 'BIRTH':
+                        clone_list.querySelector('.'+key).innerText=user[key];
+                        break;
+                }
+            }
+            user_list_tbody.append(clone_list);
+        });
+        
+    }
+    async function showDetail(id,pwd){
+        const obj = new login_obj(id,pwd);
+        const res = await fetch('/check/ajax/idPwd',{method:'POST',headers:{'Content-Type':'application/json'}, body:JSON.stringify(obj)});
+        const result = await res.json();
+        console.log(result);
+        if(result.length ===0) return false;
+        else return true;
+    }
+    async function updateUser(id){
+        const log_modal = await login_form_show(id);
+        log_modal.addEventListener('submit',async (e)=>{
+            e.preventDefault();
+            let login_id = log_modal.querySelector('input[name="u_id"]').value;
+            let login_pwd = log_modal.querySelector('input[name="u_pwd"]').value;
+           
+            const result = await showDetail(login_id,login_pwd);
+
+            if(result === true){
+                showUpdateForm()
+                .then((update_form)=>{
+                  
+                    let id_flag = false;
+                    let mail_flag = false;
+                    const cancleBtn = update_form.querySelector('#close_update_btn');
+                    cancleBtn.addEventListener('click',()=>{update_form.style.display='none';})
+                    const submitBtn = update_form.querySelector('input[type="submit"]');
+                    const id_input = update_form.querySelector('input[name="ID"]');
+                    const mail_input = update_form.querySelector('input[name="MAIL"]');
+                    const pwd_input = update_form.querySelector('input[name="PASSWORD"]');
+                    const birth_input = update_form.querySelector('input[name="BIRTH"]');
+                    id_input.addEventListener('blur',async ()=>{
+                        id_flag = await checkID(id_input.value)
+                        if(id_flag === true && mail_flag === true){
+                            console.log(1);
+                            submitBtn.disabled='';
+                            update_form.addEventListener('submit',(e)=>{
+                                e.preventDefault();
+                                const update_result = update_function(login_id, id_input.value,pwd_input.value,mail_input.value,birth_input.value);
+                            })
+                        }else{
+                            submitBtn.disabled=true;
+                        }
+                    });
+                    mail_input.addEventListener('blur',async ()=>{
+                        mail_flag = await checkMail(mail_input.value);
+                        if(id_flag === true && mail_flag == true){
+                            submitBtn.disabled='';
+                            update_form.addEventListener('submit',(e)=>{
+                                e.preventDefault();
+                                const update_result =update_function(login_id, id_input.value,pwd_input.value,mail_input.value,birth_input.value);
+                                if(update_result){
+                                    alert('수정 완료');
+                                    update_form.style.display='none';
+                                    showList();
+                                }else{
+                                    alert('수정 불가능');
+                                }
+                            })
+                        }else{
+                            submitBtn.disabled=true;
+                        }
+                    })
+
+                    // if(id_flag && mail_flag){
+                    //     //submit 버튼 누를 수 있게 한다.
+                    //     // submit 버튼 -> post  그리고 업데이트 -> 업데이트 완료 응답 -> showlist() 호출로 화면 다시 보이게 한다.
+                    //     submitBtn.disabled='';
+                    //     console.log(submitBtn);
+                    // }
+
+                    
+                });
+            }else{
+                alert('비밀번호 오류!');
+                log_modal.querySelector('input[name="u_pwd"]').value='';
+            }
+        })
+    }
+
+    async function checkID(id_v){
+        const log_o = {ID : id_v};
+        const res = await fetch('/user/confirm/ID.do',{method:'POST',headers:{'Content-Type':'application/json'}, body:JSON.stringify(log_o)});
+        const obj = await res.json();
+        const id_check = document.querySelector('strong#id_check');
+        if(obj.length === 0){
+            id_check.innerText='사용가능 ID';
+            id_check.style.color='green';
+            id_check.style.display='';
+            return true;
+        }else{
+            id_check.innerText='사용불가능 ID';
+            id_check.style.color='red';
+            id_check.style.display='';
+            return false;
+        }
+    }
+    async function checkMail(mail_v){
+        const log_o = {MAIL : mail_v};
+        const res = await fetch('/user/confirm/MAIL.do',{method:'POST',headers:{'Content-Type':'application/json'}, body:JSON.stringify(log_o)});
+        const obj = await res.json();
+        
+        const mail_check = document.querySelector('strong#mail_check');
+        console.log(mail_check);
+        console.log(id_check);
+        if(obj.length === 0){
+            mail_check.innerText='사용가능 MAIL';
+            mail_check.style.color='green';
+            mail_check.style.display='';
+            return true;
+        }else{
+            mail_check.innerText='사용불가능 MAIL';
+            mail_check.style.color='red';
+            mail_check.style.display='';
+            return false;
+        }
+    }
+    async function deleteUser(id){
+
+        
+        // fetch(`/user/ajax/deleteUser.do?id=${id}`,{method:'GET'})
+        // .then((res)=>{res.json()})
+        // .then((result)=>{
+        //     console.log(result);
+        // })
+
+        const res = await fetch(`/user/ajax/deleteUser.do?id=${id}`,{method:'GET'})
+        const result = await res.json();
+        
+       if(result.affectedRows > 0 ){
+            // user_list_tbody.innerHTML='';
+            await showList();
+       }else{
+           alert('이미 삭제되었거나 삭제 할 수 없음,');
+       }
+
+
+    }
+    async function createUser(){}
+
+
+    async function login_form_show(id){
+        const res = await fetch('/user/login.do');
+        const login_page = await res.text();
+        modal.style.display='';
+        modal.innerHTML = login_page;
+        const modal_id = modal.querySelector('input[name="u_id"]').value=id;
+
+        return modal;
+    }
+
+    
+     function showUpdateForm(){
+        return new Promise((resolve, reject)=>{
+            fetch('/user/update_form.do')
+            .then((res)=>res.text())
+            .then((update_form)=>{
+                modal.innerHTML= update_form;
+                resolve(modal);
+            })
+        })
+    }
+
+    const update_obj = function(o_id,n_id,pwd,mail,birth){
+        this.o_id = o_id;
+        this.ID = n_id;
+        this.PASSWORD = pwd;
+        this.EMAIL = mail,
+        this.BIRTH = birth;
+    }
+    async function update_function(old_id, new_id, new_pwd, new_mail,new_birth){
+        u_obj = new update_obj(old_id,new_id,new_pwd,new_mail,new_birth);
+        const res = await fetch('/user/update.do',{method:"POST",headers:{'Content-Type': 'application/json'}, body:JSON.stringify(u_obj)});
+        const result = res.json();
+
+        if(result.affectedRows === 1){
+          return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+</html>

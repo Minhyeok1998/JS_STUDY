@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+     *{
+            margin:0;
+        }
+        .my_nav{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: baseline;
+            list-style: none;
+            background-color: rgba(200,145,245,0.6);
+        }
+        .my_nav>li:first-child{
+            font-size: 25px;
+            padding: 8px 14px;
+        }
+        .my_nav a{
+            text-decoration: none;
+            color: rgba(34, 3, 65, 0.822);
+            font-weight: bolder;
+        }
+        .my_nav a:hover{
+            color: rgba(124, 13, 235, 0.822);
+        }
+        .my_nav_menu{
+            display: flex;
+            flex-direction: row;
+            list-style: none;
+        }
+        .my_nav_menu li{
+            padding: 8px 14px;
+        }
+        .my_nav_sub{
+            display: flex;
+            flex-direction: row;
+            
+            list-style: none;
+        }
+        .my_nav_sub>li{
+            padding: 8px 14px;
+        }
+    .form_container{
+        margin: 20px;
+        border: 1px solid black;
+        border-radius: 15px;
+        padding: 10px 14px;
+    }
+    .form_container>h2{
+        text-align: center;
+    }
+    .form_cont{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        list-style: none;
+    }
+    .form_cont>li{
+       
+        padding: 8px 20px;
+        display: flex;
+        justify-content: space-between;
+        
+        
+    }
+  
+</style>
+</head>
+<body>
+    <header>
+        <ul class="my_nav">
+            <li>
+                <a href="http://127.0.0.1:7777/index.html">샵핑몰</a>
+            </li>
+            <ul class="my_nav_menu">
+                <li><a href="http://127.0.0.1:7777/member/showList.do">회원 관리</a></li>
+                <li><a href="http://127.0.0.1:7777/product/main.do">상품 관리</a></li>
+                <li><a href="">게시판 관리</a></li>
+            </ul>
+
+            <ul class="my_nav_sub">
+                <li><a href="">로그인</a></li>
+                <li><a href="http://127.0.0.1:7777/member/join_user.do">회원 가입</a></li>
+            </ul>
+        </ul>
+    </header>
+    <div class="form_container">
+        <h2>회원 가입</h2>
+        <form name="insert_user">
+            <ul class="form_cont">
+                <li>
+                    <label>아이디 : <input type="text" autocomplete="off" required placeholder="id 입력" name="u_id"></label>
+                    
+                    <strong id="id_confirm">멋진 아이디를 지어주세요~!</strong>
+                </li>
+                <li>
+                    <label>비밀번호 : <input type="password" placeholder="비밀번호 입력" name="u_pwd"></label>
+                </li>
+                <!-- <li><label>비밀번호 확인 : <input type="password" placeholder="비밀번호 확인" name="u_pwd_conf"> </label>
+                    <strong id="pwd_confirm"></strong>
+                </li> -->
+                <li>
+                    <label>이름 : <input type="text" name="u_name"></label>
+                </li>
+                <li>
+                    <label>이메일 : <input type="email" name="u_email"></label>
+                    <strong id="email_confirm">이메일 입력!</strong>
+                </li>
+                <li>
+                    <label>생년월일 : <input type="date" name="u_birth"></label>
+                </li>
+                <li>
+                    <button id="submitBtn">회원 가입</button>
+                    <input type="reset" value="초기화">
+                </li>
+            </ul>
+        </form> 
+    </div>
+
+<script>
+    let id_flag = false;
+    let email_flag = false;
+    insert_user.u_id.addEventListener('blur', ()=>{checkID(insert_user.u_id.value)});
+    insert_user.u_email.addEventListener('blur',()=>{checkEmail(insert_user.u_email.value)});
+    const insert_obj = function(id,pwd,name,email,birth){
+        this.id =id;
+        this.pwd=pwd;
+        this.name = name;
+        this.email = email;
+        this.birth = birth;
+    }
+
+    function checkID(id){
+        return new Promise((resolve,reject)=>{
+            const id_obj = {'ID': id};
+            fetch('/user/confirm/ID.do',{method:"POST",headers:{"Content-Type":'application/json'},body:JSON.stringify(id_obj)})
+            .then((res)=>{return res.json()})
+            .then((result)=>{
+                if(result.length ===0){
+                    id_confirm.innerText='사용 가능 ID';
+                    id_flag=true;
+                    resolve(id_flag);
+                }else{
+                    id_confirm.innerText='사용 불가능 ID';
+                }
+            });
+        })
+    }
+
+    function checkEmail(email){
+        return new Promise((resolve,reject)=>{
+            const mail_obj = {'EMAIL': email};
+            fetch('/user/confirm/MAIL.do',{method:"POST",headers:{"Content-Type":'application/json'},body:JSON.stringify(mail_obj)})
+            .then((res)=>{return res.json()})
+            .then((result)=>{
+                if(result.length ===0){
+                    email_confirm.innerText='사용 가능 email';
+                    email_flag=true;
+                    resolve(email_flag);
+                }else{
+                    email_confirm.innerText='사용 불가능 email';
+                }
+            });
+        })
+    }
+    insert_user.addEventListener('submit',(e)=>{
+        e.preventDefault();
+
+        if(id_flag && email_flag){
+            const obj = new insert_obj(insert_user.u_id.value,insert_user.u_pwd.value, insert_user.u_name.value,insert_user.u_email.value,insert_user.u_birth.value);
+            insert_function(obj)
+            .then((result)=>{
+                if(result){
+                    alert('회원가입 완료!');
+                    window.location.reload();
+                }else{
+                    alert('회원가입 실패!');
+                }
+            });
+        }else{
+            alert('양식 다시 확인')
+        }
+    })
+
+    function insert_function(obj){
+        return new Promise((resolve, reject)=>{
+            fetch('/user/join_in.do',{method:'POST',headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)})
+            .then((res)=>{return res.json()})
+            .then((result)=>{
+                if(result.affectedRows === 1){
+                    resolve(true);
+                }else{
+                    resolve(false);
+                }
+            })
+        })
+    }
+</script>
+</body>
+</html>

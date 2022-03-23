@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인/초기 화면</title>
+<style>
+    *{
+        margin:0;
+    }
+    .my_nav{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: baseline;
+        list-style: none;
+        background-color: rgba(200,145,245,0.6);
+    }
+    .my_nav>li:first-child{
+        font-size: 25px;
+        padding: 8px 14px;
+    }
+    .my_nav a{
+        text-decoration: none;
+        color: rgba(34, 3, 65, 0.822);
+        font-weight: bolder;
+    }
+    .my_nav a:hover{
+        color: rgba(124, 13, 235, 0.822);
+    }
+    .my_nav_menu{
+        display: flex;
+        flex-direction: row;
+        list-style: none;
+    }
+    .my_nav_menu li{
+        padding: 8px 14px;
+    }
+    .my_nav_sub{
+        display: flex;
+        flex-direction: row;
+        
+        list-style: none;
+    }
+    .my_nav_sub>li{
+        padding: 8px 14px;
+    }
+    
+</style>
+</head>
+<body>
+    <header>
+        <ul class="my_nav">
+            <li>
+                <a href="http://127.0.0.1:7777/index.html">샵핑몰</a>
+            </li>
+            <ul class="my_nav_menu">
+                <li><a href="http://127.0.0.1:7777/member/showList.do">회원 관리</a></li>
+                <li><a href="http://127.0.0.1:7777/product/main.do">상품 관리</a></li>
+                <li><a href="">게시판 관리</a></li>
+            </ul>
+
+            <ul class="my_nav_sub">
+                <li><a href="">로그인</a></li>
+                <li><a href="http://127.0.0.1:7777/member/join_user.do">회원 가입</a></li>
+            </ul>
+        </ul>
+    </header>
+</body>
+</html>

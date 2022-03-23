@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+    *{
+        box-sizing: border-box;
+    }
+    .grid_form{
+        width: 450px;
+        height: 500px;
+        align-content: space-evenly;
+        justify-content: center;
+        align-items: center;
+        justify-items:center;
+        display: grid;
+        padding: 8px 14px;
+        grid-template-columns: 2fr 3fr;
+        grid-template-areas:
+        "ID ID_INPUT"
+        "check_id check_id"
+        "PWD  PWD_INPUT"
+        "MAIL  MAIL_INPUT"
+        "check_mail check_mail"
+        "BIRTH  BIRTH_INPUT"
+        "bottom  bottom"
+        
+    }
+    .check_id{
+        grid-area: check_id;
+    }
+    .check_mail{
+        grid-area: check_mail;
+    }
+    .ID{grid-area: ID;}
+    .ID_INPUT{grid-area: ID_INPUT;}
+    .PWD{grid-area: PWD;}
+    .PWD_INPUT{grid-area: PWD_INPUT;}
+    .MAIL{grid-area: MAIL;}
+    .MAIL_INPUT{grid-area: MAIL_INPUT;}
+    .BIRTH{grid-area: BIRTH;}
+    .BIRTH_INPUT{grid-area: BIRTH_INPUT;}
+    .bottom_form{
+        grid-area: bottom;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        gap: 10px;
+    }
+</style>
+</head>
+<body>
+    
+    <form name="update_form" class="grid_form">
+        
+        <label for="ID" class="ID"> 아이디 : </label>
+        <input type="text" name="ID" class="ID_INPUT">
+        <span class="check_id"><strong id="id_check" style="display:none;">사용가능 ID</strong></span>
+        <label for="pwd" class="PWD"> 비밀번호 : </label>
+        <input type="password" name="PASSWORD" class="PWD_INPUT">
+        <label for="MAIL" class="MAIL"> 메일 : </label>
+        <input type="email" name="MAIL" class="MAIN_INPUT">
+        <span class="check_mail"><strong id="mail_check" style="display:none;">사용가능 EMAIL</strong></span>
+        <label for="BIRTH" class="BIRTH"> 생일 : </label>
+        <input type="date" name="BIRTH" class="BIRTH_INPUT">
+        <div class="bottom_form">
+            <input type="submit" value="수정 완료" name="update_submit" disabled>
+            <input type="reset" value ='초기화'>
+            <button type="button" id="close_update_btn">취소</button>
+        </div>
+    </form>
+</body>
+
+<script>
+  
+</script>
+</html>
