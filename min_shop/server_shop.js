@@ -143,6 +143,39 @@ http.createServer(async (req, res)=>{
             res.end(image);
         })
         
+    }else if(parse_req.pathname === '/product/detail'){
+        console.log(parse_req.query);
+        fsRead('product_detail.html').then((product_detail_page)=>{
+           return new Promise((resolve,reject)=>{
+                res.setHeader("Content-Type","text/html; charset=utf-8");
+                res.write(product_detail_page);
+                resolve();
+           }).then(async ()=>{
+               let sql ='select * from product where id = ?'
+                const result_list = await sqlConQuery(sql,[parse_req.query["id"]]);
+                // res.setHeader("Content-Type","application/json");
+                console.log(result_list['result']);
+                res.write(`<script>let obj_list = ${JSON.stringify(result_list["result"])}</script>`);
+                res.end();
+                result_list['sql_conn'].end();
+           })
+        })
+        
+        
+    }else if(parse_req.pathname==='/product/update/submit.do'){
+        let post_data = '';
+        req.on('data',(data)=>{post_data += data;});
+        req.on('end',async ()=>{
+            const json_obj = JSON.parse(post_data);
+           
+            let sql = 'UPDATE PRODUCT SET NAME=?, BRAND=?, PRICE=?,COUNT=?,MAIN_IMG=?,detail_img=? WHERE ID=?';
+            const result_list = await sqlConQuery(sql, [json_obj['NAME'],json_obj['BRAND'],json_obj['PRICE'],json_obj['COUNT'],json_obj['MAIN_IMG'],json_obj['detail_img'],json_obj['ID']]);
+            res.write(JSON.stringify(result_list['result']));
+            res.end();
+            result_list['sql_conn'].end();
+        })
+    }else if(parse_req.pathname==='/product/delete'){
+        console.log(parse_req.query);
     }
 }).listen(7777,(e)=>{
     if(e){

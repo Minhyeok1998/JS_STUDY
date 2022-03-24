@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>화면 detail</title>
+<style>
+    *{
+        margin:0;
+    }
+    .my_nav{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: baseline;
+        list-style: none;
+        background-color: rgba(200,145,245,0.6);
+    }
+    .my_nav>li:first-child{
+        font-size: 25px;
+        padding: 8px 14px;
+    }
+    .my_nav a{
+        text-decoration: none;
+        color: rgba(34, 3, 65, 0.822);
+        font-weight: bolder;
+    }
+    .my_nav a:hover{
+        color: rgba(124, 13, 235, 0.822);
+    }
+    .my_nav_menu{
+        display: flex;
+        flex-direction: row;
+        list-style: none;
+    }
+    .my_nav_menu li{
+        padding: 8px 14px;
+    }
+    .my_nav_sub{
+        display: flex;
+        flex-direction: row;
+        
+        list-style: none;
+    }
+    .my_nav_sub>li{
+        padding: 8px 14px;
+    }
+    /*product css*/
+    .product_content{
+        display: flex;
+        flex-direction: row;
+        width: 800px;
+        margin: 0 auto;
+    }
+    .product_content img{
+        width: 500px;
+    }
+    .product_info{
+        border: 2px solid black;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        padding: 10px 15px;
+        list-style:none;
+        background-color: black;
+        color: white;
+        width: 300px;
+        align-items: center;
+    }
+    .product_UD{
+        display: flex;
+        list-style: none;
+        gap: 5px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .detail_board_container{
+        margin-top: 60px;
+    }
+    .detail_board_area{
+        display: flex;
+        padding: 0px;
+    }
+    .detail_board_area>div{
+        width: 200px;
+        border: 1px solid black;
+        text-align: center;
+        border-top-right-radius: 20px;
+    }
+    .detail_board_area>div:hover{
+        background-color: rgba(200,145,245,0.6);
+    }
+    .detail_board_area>div>a{
+        text-decoration: none;
+        color: black;
+    }
+    .detail_board_content{
+       align-items: center;
+    }
+    .choice{
+        background-color: rgba(200,145,245,0.6);
+    }
+    .imgCont{
+        margin: 0 auto;
+    }
+    .update_modal{
+        position: absolute;
+        background-color: azure;
+        top: 10vh;
+        right: 50vw;
+        z-index: 1;
+        width: 500px;
+        height: 300px;
+        border: 1px solid black;
+        border-radius: 10px;
+    }
+    .update_modal>h1{
+        border-top-right-radius: 10px;
+        border-top-left-radius: 10px;
+        background-color: rgba(200,145,245,0.6);
+        color: white;
+        text-align: center;
+        padding: 8px;
+    }
+    .update_info{
+       
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 5px;
+        grid-template-areas: 
+        'n1 i1'
+        'n2 i2'
+        'n3 i3'
+        'n4 i4'
+        'n5 i5'
+        'n6 i6'
+        'n7 i7'
+        'btn btn';
+    }
+    .form_ul{
+        margin: 20px;
+        padding: 10px 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: space-around;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <ul class="my_nav">
+          <li><a href="./main.do"> <==뒤로 가기</a></li>
+        </ul>
+    </header>
+    <main>
+        <div class="product_container">
+            <!--clone 시작--><div class="product_content">
+                <img src="" alt="" class="MAIN_IMG"> <!--image/162058C.jpeg-->
+                <ul class="product_info">
+                    
+                    <li>상품 번호 : <span class="ID">AAA</span></li>
+                    <li>이름 : <span class="NAME">에어맥스720</span></li>
+                    <li>브랜드 : <span class="BRAND">나이키</span></li>
+                    <li>가격 : <span class="PRICE">800000</span> 원</li>
+                    <li>재고 수량 : <span class="COUNT">10</span> 개</li>
+                    <li>판매중 : <strong class="SALE">판매 중</strong></li>
+                    <li>카테고리 : <span class="CATEGORI">신발</span></li>
+                    <ul class="product_UD">
+                        <li><button type="button" id="product_up">수정</button></li>
+                        <li><button type="button" id="product_del">삭제</button></li>
+                    </ul>
+                </ul>
+            </div><!--clone 끝-->
+        </div>
+        <div class="detail_board_container">
+            <ul class="detail_board_area">
+                <div class="product_board">후기</div>
+                <div class="product_detail_image choice">상세 이미지</div>
+            </ul>
+            <div class="detail_board_content">
+
+            </div>
+        </div>
+    </main>
+
+    <div class="update_modal" style="display: none;">
+        <h1>상품 업데이트</h1>
+        <form class="update_info" name="update_form">
+            <label>상품 번호(ID) :</label> <input type="text" name="up_id" readonly>
+            <label>이름(NAME) :</label> <input type="text" name="up_name">
+            <label>브랜드(BRAND) :</label> <input type="text" name="up_brand">
+            <label>가격(PRICE) :</label> <input type="text" name="up_price">
+            <label>재고 수량(COUNT): :</label> <input type="text" name="up_count">
+            <label>메인 이미지 :</label> <input type="text" name="up_mainImg">
+            <label>상세 이미지 :</label> <input type="text" name="up_detailImg">
+            <ul class="form_ul">
+                <input type="submit" value="업데이트">
+                <input type="reset"  value="초기화">
+                <input type="button" name="cancle" value="취소">
+            </ul>
+        </form>
+    </div>
+<script>
+    const product_content = document.querySelector(".product_content");
+    const detail_board_content = document.querySelector('div.detail_board_content');
+    const product_board = document.querySelector('div.product_board');
+    const update_modal = document.querySelector('div.update_modal');
+    function showProductInfo(obj_list){
+        let key
+        for(key in obj_list){
+            switch(key){
+                case 'ID':
+                    let id_value = obj_list[key];
+                    product_content.querySelector(`.${key}`).innerText = obj_list[key];
+                    product_up.addEventListener('click',()=>{updatePd(id_value)});
+                    product_del.addEventListener('click',()=>{delPd(id_value)});
+                    break;
+                case 'NAME':
+                    product_content.querySelector(`.${key}`).innerText = obj_list[key];
+                    break;
+                case 'COUNT':
+                    product_content.querySelector(`.${key}`).innerText = obj_list[key];
+                    break;
+                case 'NAME':
+                    product_content.querySelector(`.${key}`).innerText = obj_list[key];
+                    break;
+                case 'BRAND':
+                    product_content.querySelector(`.${key}`).innerText = obj_list[key];
+                    break;
+                case 'PRICE':
+                    product_content.querySelector(`.${key}`).innerText = obj_list[key];
+                    break;
+                case 'MAIN_IMG':
+                    product_content.querySelector(`.${key}`).src = 'image/'+obj_list[key];
+                    break;
+                case 'detail_img':
+                    const imgCont = document.createElement('div');
+                    imgCont.classList.add('imgCont');
+                    const imgTag  = document.createElement('img');
+                    imgCont.append(imgTag);
+                    imgTag.src='image/'+obj_list[key];
+                    detail_board_content.append(imgCont);
+                    break;
+            }
+        }
+    }
+    window.addEventListener('load',()=>{
+        console.log(obj_list);  // 페이지가 LOAD 되면 받는 데이터
+        showProductInfo(obj_list[0]);
+        
+    })
+
+    async function updatePd(id){
+        update_modal.style.display='';
+        update_form.up_id.value=id;
+    }
+    
+    update_form.cancle.addEventListener('click',()=>{
+        update_modal.style.display='none';
+    })
+    const update_obj = function(i,n,b,p,c,mi,di){
+        this.ID=i;
+        this.NAME=n;
+        this.BRAND = b;
+        this.PRICE = p;
+        this.COUNT = c;
+        this.MAIN_IMG = mi;
+        this.detail_img = di;
+    }
+    update_form.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const obj = new update_obj(update_form.up_id.value,
+        update_form.up_name.value,
+        update_form.up_brand.value,
+        update_form.up_price.value,
+        update_form.up_count.value,
+        update_form.up_mainImg.value,
+        update_form.up_detailImg.value);
+        fetch('/product/update/submit.do', {method:'POST', headers:{'Content-Type':'application/json'},body:JSON.stringify(obj)})
+        .then((res)=>{console.log(0); return res.json()})
+        .then((result)=>{
+            if(result.affectedRows === 1){
+                alert('업데이트 완료');
+                console.log(obj);
+                showProductInfo(obj);
+                update_modal.style.display='none';
+            }else{
+                alert('업데이트 실패');
+            }
+        })
+   
+    })
+
+    function delPd(id){
+        const result = confirm('삭제하시겠습니까?');
+        if(result){
+            fetch('/product/delete?id='+id)
+            .then((res)=>{return res.json()})
+            .then((result)=>{
+                console.log(result);
+            })
+        }
+    }
+</script>
+</body>
+</html>

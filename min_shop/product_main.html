@@ -86,6 +86,15 @@
         list-style: none;
         gap: 10px;
     }
+    @media(max-width:1400px ){
+        .main_area{
+            grid-template-columns:  1fr 1fr;
+            grid-template-areas:
+                        'i1 i2'
+                        'i3 i4'
+                        'i5 i6';
+        }
+    }
 </style>
 </head>
 <body>
@@ -102,7 +111,7 @@
 
             <ul class="my_nav_sub">
                 <li><a href="">로그인</a></li>
-                <li><a href="http://127.0.0.1:7777/member/join_user.do">회원 가입</a></li>
+                <li><a href="/member/join_user.do">회원 가입</a></li>
             </ul>
         </ul>
     </header>
