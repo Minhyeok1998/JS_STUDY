@@ -176,6 +176,23 @@ http.createServer(async (req, res)=>{
         })
     }else if(parse_req.pathname==='/product/delete'){
         console.log(parse_req.query);
+        let sql = 'DELETE FROM PRODUCT WHERE ID=?';
+        let sql_result = await sqlConQuery(sql,[parse_req.query['id']]);
+        res.end(JSON.stringify(sql_result['result']));
+        sql_result['sql_conn'].end((e)=>{});
+    }
+
+    else if(parse_req.pathname==='/product/showBoard'){
+        let query = 'SELECT NUM,USER_ID,CONTENTS,DATE,STAR FROM BOARD WHERE PRODUCT_ID = ? ';
+        const result_list = await sqlConQuery(query,[parse_req.query['PRODUCT_ID']]);
+        console.log(result_list['result']);
+        res.end(JSON.stringify(result_list['result']));
+        result_list['sql_conn'].end((e)=>{});
+    }else if(parse_req.pathname==='/product/deleteBoard'){
+        let query = 'DELETE FROM BOARD WHERE NUM = ?';
+        const result_list = await sqlConQuery(query,[parse_req.query['NUM']]);
+        res.end(JSON.stringify(result_list['result']));
+        result_list['sql_conn'].end((e)=>{});
     }
 }).listen(7777,(e)=>{
     if(e){

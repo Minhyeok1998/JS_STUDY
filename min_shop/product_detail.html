@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>화면 detail</title>
 <style>
+    .display_none{
+        display: none !important;
+    }
     *{
         margin:0;
     }
@@ -145,6 +148,23 @@
         gap: 10px;
         justify-content: space-around;
     }
+    .CONTENT{
+     
+    }
+    
+    .CONTENT_ITEM{
+        padding: 20px;
+        border-bottom: 1px dashed rgba(235, 145, 235, 0.424);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
+    }
+    .CONTENT_ITEM>ul{
+        display: flex;
+        list-style: none;
+        flex-direction: column;
+    }
 </style>
 </head>
 <body>
@@ -179,7 +199,22 @@
                 <div class="product_detail_image choice">상세 이미지</div>
             </ul>
             <div class="detail_board_content">
-
+                <div class="CONTENT display_none"> 
+                </div>
+                <div class="CONTENT_ITEM display_none">
+                    <ul class="left_comment">
+                        <li class="USER_ID">TOM2945</li>
+                        <li class="STAR">★★★★★</li>
+                    </ul>
+                    <strong class="cent_comment CONTENTS" >
+                        너무너무 좋아요
+                    </strong>
+                    <ul class="right_comment">
+                        <li class="DATE">2022/12/11</li>
+                        <li><button type="button" class="comment_del_btn">삭제</button></li>
+                    </ul>
+                </div>
+                <img class="DETAIL_IMG" src="" alt="">
             </div>
         </div>
     </main>
@@ -205,7 +240,9 @@
     const product_content = document.querySelector(".product_content");
     const detail_board_content = document.querySelector('div.detail_board_content');
     const product_board = document.querySelector('div.product_board');
+    const product_detail_image = document.querySelector('div.product_detail_image');
     const update_modal = document.querySelector('div.update_modal');
+    const detail_board_container = document.querySelector('div.detail_board_container');
     function showProductInfo(obj_list){
         let key
         for(key in obj_list){
@@ -235,12 +272,11 @@
                     product_content.querySelector(`.${key}`).src = 'image/'+obj_list[key];
                     break;
                 case 'detail_img':
-                    const imgCont = document.createElement('div');
-                    imgCont.classList.add('imgCont');
-                    const imgTag  = document.createElement('img');
-                    imgCont.append(imgTag);
-                    imgTag.src='image/'+obj_list[key];
-                    detail_board_content.append(imgCont);
+                    
+                    document.querySelector(`.DETAIL_IMG`).src = 'image/'+obj_list[key];
+                    // const imgTag  = document.createElement('img');
+                    // imgTag.src='image/'+obj_list[key];
+                    // detail_board_content.append(imgTag);
                     break;
             }
         }
@@ -298,9 +334,89 @@
             fetch('/product/delete?id='+id)
             .then((res)=>{return res.json()})
             .then((result)=>{
-                console.log(result);
+                if(result.affectedRows === 1){
+                    alert('삭제 완료');
+                    //제품을 삭제가 완료되면 product/main 으로 이동 시킨다.!
+                    window.location.href='http://127.0.0.1:7777/product/main.do';
+                }
             })
         }
+    }
+    //"후기" 클릭하면 해당 상품에 대한 후기글 리스트가 나오게한다. => select * from board where id='AAA'
+    // id 는 querySelector로 받아오자
+    const CONTENT = detail_board_container.querySelector('div.CONTENT');
+    const DETAIL_IMG = detail_board_container.querySelector('img.DETAIL_IMG');
+    product_board.addEventListener("click",()=>{
+        product_board.classList.add('choice');
+        product_detail_image.classList.remove('choice');
+        CONTENT.classList.remove('display_none');
+        DETAIL_IMG.classList.add('display_none');
+        const id= document.querySelector('ul.product_info>li>span.ID').innerText;
+        showProductBoard(id);
+    })
+
+    product_detail_image.addEventListener('click',()=>{
+        product_detail_image.classList.add('choice');
+        product_board.classList.remove('choice');
+        CONTENT.classList.add('display_none');
+        DETAIL_IMG.classList.remove('display_none');
+        const id= document.querySelector('ul.product_info>li>span.ID').innerText;
+       
+    })
+
+    detail_board_content
+    detail_board_container
+    const CONTENT_ITEM = document.querySelector('div.CONTENT_ITEM');
+    function showProductBoard(id){
+        // CONTENT.innerHTML = '';
+        fetch('/product/showBoard?PRODUCT_ID='+id)
+        .then((res)=>{return res.json()})
+        .then((content_list)=>{
+            console.log(content_list);
+            /*
+                CONTENTS: "다음에 또 사고 싶어요~~~~(내용)"
+                DATE: "2022-03-24T15:00:00.000Z"
+                NUM: 7
+                STAR: 4.5
+                USER_ID: "min1234"
+            */
+            CONTENT.innerHTML='';
+            content_list.forEach((item)=>{
+                const clone_item = CONTENT_ITEM.cloneNode(true);
+                clone_item.classList.remove('display_none');
+                let key;
+                for(key in item){
+                    if(key === 'STAR'){
+
+                    }else if(key ==='NUM'){
+                        clone_item.querySelector('button.comment_del_btn').addEventListener('click',()=>{
+                            deleteBoard(id,item['NUM']);
+                        })
+                    }else{
+
+                        clone_item.querySelector('.'+key).innerText=item[key];
+                    }
+                }
+                CONTENT.append(clone_item);
+            })
+        })
+
+    }
+    
+
+    function deleteBoard(id,NUM){
+        fetch('/product/deleteBoard?NUM='+NUM)
+        .then((res)=>{ return res.json()})
+        .then((result)=>{
+            console.log(result);
+            if(result.affectedRows === 1){
+                alert('삭제 성공');
+            }else{
+                alert('삭제 실패');
+            }
+        }).then(()=>{
+            showProductBoard(id);
+        })
     }
 </script>
 </body>
