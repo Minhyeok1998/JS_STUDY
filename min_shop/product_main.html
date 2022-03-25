@@ -168,9 +168,11 @@
     const main_area =document.querySelector('main.main_area');
     const product_box = document.querySelector('div.product_box'); // 복사할 노드
    window.addEventListener('load',async ()=>{
-       await showProduct_info();
-       await showProduct_mainImg();
-       await showMenuList();
+          showProduct_info();
+        // await showProduct_mainImg();
+          showMenu();
+
+        
    });
 
 
@@ -217,6 +219,67 @@
                 
             });
         })
+   }
+    //   category_num: 1
+    // name: "가전"
+    // parent: null
+   const aside_area = document.querySelector('aside.aside_area'); 
+   async function showMenu(){
+        const res = await fetch('/product/cateMenu.do');
+        const result = await res.json();
+            aside_area.innerHTML='';
+        for(let i = 0; i<result.length; i++){
+           let list = JSON.parse(result[i]);
+          
+           if( i === 0){ //최상위
+                list.forEach((item)=>{
+                    const liTag = document.createElement('li');
+                    const aTag = document.createElement('a');
+                    aTag.href='#';
+                    aTag.innerText = item['name'];
+                    liTag.append(aTag);
+                    liTag.classList.add("cate_"+item['category_num']);
+                    const ulTag = document.createElement('ul');
+                    liTag.append(ulTag);
+                    aside_area.append(liTag);
+                })
+           }else if(i === 1){ //두번째
+                list.forEach((item)=>{
+                    
+                    const parent_menu = aside_area.querySelector(`li.cate_${item['parent']} ul`);
+                    const liTag = document.createElement('li');
+                    const aTag = document.createElement('a');
+                    aTag.href='#';
+                    aTag.innerText = item['name'];
+                    liTag.append(aTag);
+                    liTag.classList.add('cate_'+item['category_num']);
+                    const ulTag = document.createElement('ul');
+                    liTag.append(ulTag);
+                    parent_menu.append(liTag);
+                });
+           }else if(i === 2){ //세번째
+               list.forEach((item)=>{
+                const parent_menu = document.querySelector(`li.cate_${item['parent']}>ul`);
+                    const liTag = document.createElement('li');
+                    const aTag = document.createElement('a');
+                    aTag.innerText = item['name'];
+                    aTag.href='#';
+                    liTag.append(aTag);
+                    liTag.classList.add("cate_"+item['category_num']);
+                    const ulTag = document.createElement('ul');
+                    liTag.append(ulTag);
+                    parent_menu.append(liTag);
+               })
+           }
+        }
+        result.forEach((menu_list_str)=>{
+            // const menu_list_arr = JSON.parse(menu_list_str);
+            // console.log(menu_list_arr);
+            
+            
+        })
+
+        
    }
 </script>
 </body>

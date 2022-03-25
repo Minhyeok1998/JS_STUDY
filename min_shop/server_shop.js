@@ -12,6 +12,26 @@ const DB_INF = {
     database: 'min_shop'
 };
 
+const main_menu_query = `select category_num, name, sub as parent
+from category
+where sub is null`;
+
+const main_menu_child_query = `select category_num, name, sub as parent
+from category
+where sub in(select category_num from category where sub is null)`;
+
+const main_menut_child_child_query = `select category_num, name, sub as parent
+from category
+where sub in(select category_num
+from category
+where sub in(select category_num from category where sub is null))`;
+
+const menu_obj = function(m1,m2,m3){
+    this.first_menu = m1;
+    this.second_menu = m2;
+    this.third_menu = m3;
+}
+
 http.createServer(async (req, res)=>{
     let parse_req = url.parse(req.url,true);
     console.log('요청이 왔당 !!!! :'+ parse_req.pathname);
@@ -193,6 +213,22 @@ http.createServer(async (req, res)=>{
         const result_list = await sqlConQuery(query,[parse_req.query['NUM']]);
         res.end(JSON.stringify(result_list['result']));
         result_list['sql_conn'].end((e)=>{});
+    }else if(parse_req.pathname='/product/cateMenu.do'){
+        let first_menu =  sqlConQuery(main_menu_query);
+        let second_menu =  sqlConQuery(main_menu_child_query);
+        let third_menu =  sqlConQuery(main_menut_child_child_query);
+        first_menu = await first_menu;
+        second_menu = await second_menu;
+        third_menu = await third_menu;
+        
+        
+        const list = new Array();
+        list.push(JSON.stringify(first_menu['result']));
+        list.push(JSON.stringify(second_menu['result']));
+        list.push(JSON.stringify(third_menu['result']));
+        console.log(JSON.stringify(list));
+        res.end(JSON.stringify(list));
+        
     }
 }).listen(7777,(e)=>{
     if(e){
