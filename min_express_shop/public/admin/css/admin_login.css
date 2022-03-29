@@ -1,0 +1,36 @@
+.formConatiner {
+  background-color: rgba(0, 162, 255, 0.383);
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 200px;
+  position: absolute;
+  top: 30vh;
+  right: 40vw;
+  justify-content: center;
+  align-items: baseline;
+
+  padding: 8px 20px;
+}
+
+.formConatiner input[type="text"],
+.formConatiner input[type="password"] {
+  font-size: 20px;
+  padding: 8px 14px;
+}
+.formConatiner input[type="text"]:focus,
+.formConatiner input[type="password"]:focus {
+  background-color: rgba(28, 124, 180, 0.185);
+}
+
+.formConatiner label {
+  font-weight: bolder;
+  padding: 8px 14px;
+}
+
+.formConatiner input[type="submit"] {
+  font-size: 15px;
+  padding: 8px 14px;
+  margin-top: 10px;
+}
