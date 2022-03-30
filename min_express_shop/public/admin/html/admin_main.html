@@ -4,10 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/admin/css/admin_main.css">
     <title>min_shop 관리자 Main 페이지</title>
 </head>
 <body>
-    <h1>HI ADMIN MAIN PAGE ~~~~</h1>
-    <h2>안녕~</h2>
+    <header>
+        <ul class="admin_header">
+            <li><a href="/admin/html/admin_main.html"><strong>관리자 화면 메인</strong></a></li>
+            <li>
+                <form name="search_form" action="" method="POST">
+                    <input type="text" placeholder="회원 ID 검색" name="search_text">
+                    <input type="submit" value="검색">
+                </form>
+            </li>
+            <ul class="admin_header_login">
+                <li><b id="login_id">현재 아이디</b></li>
+                <li><button id="logOutBtn">로그아웃</button></li>
+            </ul>
+        </ul>
+    </header>
+
+    <nav>
+        <ul class="admin_nav">
+                <li><a href="#"><strong>회원 관리</strong></a></li>
+                <li><a href="#"><strong>상품 관리</strong></a></li>
+                <li><a href="#"><strong>게시판 관리</strong></a></li>
+        </ul>
+    </nav>
 </body>
 </html>

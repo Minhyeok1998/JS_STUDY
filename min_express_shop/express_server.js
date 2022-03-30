@@ -28,7 +28,7 @@ app.use(express.static('public')); //static resource 요청이 들어오면 publ
 let login_id =''; //login 화면에 login 이 성공하게 되면 DB에 해당 튜플의 애트리뷰트 LOGIN ='on' 으로 바뀌고 , id를 login_id에 저장한다. 
 
 
-//!!!!!!!!!!!!!!!!!!!!!!!!setInterval 로 30분 마다 login_id 를 초기화  구현 해야한다 !!!!!!!!!!!!!!!!!!!!(구현하면 지우기)
+
 setInterval(()=>{
     login_id = '';
 },2100000);
