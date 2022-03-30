@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/admin/css/admin_login.css">
     <script type="text/javascript" src="/admin/js/admin_login.js" defer></script>
 </head>
-<body>
+<body onload="noBack();" onpageshow="if(event.persited) noBack();" onunload="">
     <form action="/admin/login.do" method="POST" class="formConatiner" name="login_form">
         <label for="">ID : </label><input type="text" value="admin" name="id">
         <label for="">paswword : </label><input type="password" value="1234"name='pwd'>
