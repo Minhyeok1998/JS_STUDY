@@ -168,3 +168,6 @@ VALUES
 ,("그냥그래요","배송도 별로에요","2_999_COMENT_WRITER_product_comment.jpeg",3,8,7,999,'COMENT_WRITER')
 ,("별루에요","배송도 빨라요","3_999_COMENT_WRITER_product_comment.jpeg",10,5,6,999,'COMENT_WRITER')
 ,("이뻐요","하루 걸렸어요","4_999_COMENT_WRITER_product_comment.jpeg",9,7,8,999,'COMENT_WRITER');
+
+
+gg
