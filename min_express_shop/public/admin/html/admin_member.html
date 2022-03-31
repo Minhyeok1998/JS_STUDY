@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/admin/css/admin_member.css">
+    <script src="/admin/js/admin_member.js" defer></script>
+    <title>회원 관리 페이지</title>
+</head>
+<body>
+    <header>
+        <ul class="admin_header">
+            <li><a href="/admin/html/admin_main.html"><strong>관리자 화면 메인</strong></a></li>
+            <li>
+                <form name="search_form" action="" method="POST">
+                    <input type="text" placeholder="회원 ID 검색" name="search_text">
+                    <input type="submit" value="검색">
+                </form>
+            </li>
+            <ul class="admin_header_login">
+                <li><b id="login_id">현재 아이디</b></li>
+                <li><button id="logOutBtn">로그아웃</button></li>
+            </ul>
+        </ul>
+    </header>
+
+    <nav>
+        <ul class="admin_nav">
+                <li><a href="#"><strong>회원 관리</strong></a></li>
+                <li><a href="#"><strong>상품 관리</strong></a></li>
+                <li><a href="#"><strong>게시판 관리</strong></a></li>
+        </ul>
+    </nav>
+
+
+    <main>
+        <ul class="member_control">
+            <li><button id="memCreateBtn">회원 추가</button></li>
+            <li><button id="memSelecBtn">모두 선택</button></li>
+            <li><button id="memDelBtn">선택 삭제</button></li>
+        </ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>PHONE</th>
+                    <th>EMAIL</th>
+                    <th>NAME</th>
+                    <th>ADDRESS</th>
+                    <th>ADDRESS_DETAIL</th>
+                    <th>BIRTH</th>
+                    <th>선택</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AAA</td>
+                    <td>010-2709-9197</td>
+                    <td>tom2945@naver.com</td>
+                    <td>길동</td>
+                    <td>고양시 덕양구 내유동</td>
+                    <td>AAA 빌라 101호</td>
+                    <td>1900-01-01</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

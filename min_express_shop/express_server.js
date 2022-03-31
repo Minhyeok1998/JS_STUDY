@@ -28,7 +28,7 @@ app.use(express.static('public')); //static resource 요청이 들어오면 publ
 let login_id =''; //login 화면에 login 이 성공하게 되면 DB에 해당 튜플의 애트리뷰트 LOGIN ='on' 으로 바뀌고 , id를 login_id에 저장한다. 
 
 
-
+//!!!!!!!!!!!!!!!!!!!!!!!!setInterval 로 30분 마다 login_id 를 초기화  구현 해야한다 !!!!!!!!!!!!!!!!!!!!(구현하면 지우기)
 setInterval(()=>{
     login_id = '';
 },2100000);
@@ -87,7 +87,7 @@ app.post('/admin/login.do',async (req,res)=>{
     let login_sql = 'SELECT COUNT(*) as "login_result" FROM ADMIN WHERE ID= ? AND PASSWORD = ?';
     let db_result = await connMysqlQuery(login_sql,[ID,PWD]);
 
-    console.log(db_result['result']); 
+    // console.log(db_result['result']); 
     //db_result['result'] [{login_result:1}] 배열 의 object로 온다.
     if(db_result['result'][0].login_result == 1){ // LOGIN 결과
         console.log("LOGIN 성공");
@@ -123,6 +123,27 @@ app.post('/admin/login.do',async (req,res)=>{
 
     db_result['conn'].end();
     res.send();
+});
+
+app.get('/admin/member.do',async (req,res)=>{
+    let member_page = readData('public/admin/html/admin_member.html');
+
+    let query = 'SELECT * FROM MEMBER';
+    let DbObj = connMysqlQuery(query);
+
+    member_page = await member_page;
+    DbObj = await DbObj;
+
+    res.write(member_page);
+    res.write(`
+        <script>
+            const Member = ${JSON.stringify(DbObj['result'])};
+            
+        </script>
+    `);
+
+    res.send();
+    DbObj['conn'].end();
 })
 
 app.listen(8877, (e)=>{
