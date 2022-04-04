@@ -28,10 +28,11 @@ app.use(express.static('public')); //static resource 요청이 들어오면 publ
 let login_id =''; //login 화면에 login 이 성공하게 되면 DB에 해당 튜플의 애트리뷰트 LOGIN ='on' 으로 바뀌고 , id를 login_id에 저장한다. 
 
 
+
 //!!!!!!!!!!!!!!!!!!!!!!!!setInterval 로 30분 마다 login_id 를 초기화  구현 해야한다 !!!!!!!!!!!!!!!!!!!!(구현하면 지우기)
-setInterval(()=>{
-    login_id = '';
-},2100000);
+// setInterval(()=>{
+//     login_id = '';
+// },2100000);dddddd
 app.get('/admin',async (req,res)=>{
     
     let query = `SELECT LOGIN FROM ADMIN WHERE ID = ?`;
@@ -45,6 +46,11 @@ app.get('/admin',async (req,res)=>{
             //관리자 메인 페이지를 전송!!
             const admin_main_page = await readData('public/admin/html/admin_main.html');
             res.write(admin_main_page);
+            res.write(`
+                <script>
+                    const LOGIN_ID = '${login_id}';
+                </script>
+            `);
             res.send();
         }else{
            console.log("로그인 되어 있지 않음");
@@ -93,7 +99,10 @@ app.post('/admin/login.do',async (req,res)=>{
         console.log("LOGIN 성공");
         //관리자 화면으로 이동.
         //login_id 에 ID를 저장한다.
-        const adminMain_page = await readData('public/admin/html/admin_main.html');
+        let adminMain_page =  readData('public/admin/html/admin_main.html');
+        adminMain_page = await adminMain_page;
+       
+        
         res.write(`
             <script>
                 const LOGIN_ID = ${ID};
@@ -118,6 +127,7 @@ app.post('/admin/login.do',async (req,res)=>{
                 alert("ID 또는 Password를 확인 해주세요");
             </script>
         `);
+       
         res.write(Login_page);
     }
 
@@ -144,7 +154,32 @@ app.get('/admin/member.do',async (req,res)=>{
 
     res.send();
     DbObj['conn'].end();
+});
+
+
+
+app.put('/member/:id/logOut',async (req,res)=>{
+    console.log("로그아웃 들어왔다~~~");
+    console.log("아이디 : "+req.params.id);
+   
+    let query = "UPDATE ADMIN SET LOGIN = 'OFF' WHERE ID = ?";
+    let db_result = connMysqlQuery(query,[req.params.id]);
+
+    db_result = await db_result;
+   
+    console.log(db_result['result']);
+
+    res.write(JSON.stringify(db_result['result']));
+    res.send();
+    login_id='';
+    db_result['conn'].end();
+
+});
+
+app.get('/admin/getID',(req,res)=>{
+    res.send(JSON.stringify(login_id));
 })
+
 
 app.listen(8877, (e)=>{
 

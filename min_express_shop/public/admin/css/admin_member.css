@@ -5,6 +5,9 @@
   a {
     text-decoration: none;
   }
+  .disabled{
+    display: none;
+  }
   .admin_header {
     display: flex;
     list-style: none;
